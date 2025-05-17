@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session, request,flash,jsonify
 from flask_socketio import SocketIO,emit,join_room
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pymongo import MongoClient
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from bson import ObjectId
@@ -9,7 +9,7 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-load_dotenv()
+# load_dotenv()                 # used for local env  use 
 app.secret_key = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
