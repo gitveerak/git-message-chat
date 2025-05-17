@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/home.css') }}">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <div class="wrap_left">
+            <div class="other_users">
+                <div class="other_users_list">
+                        {% if other_user_list %}
+                            <ul>
+                                {% for user in other_user_list %}
+                                <li class="user_lists">{{ user.username | title}}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="wrap_right">
+            <div class="chat_box_outer">
+                <label class="to_user"></label>
+                <div class="chat_box"></div>
+                <div class="chat_box_inner">
+                    <input type="text" name="chat" id="chat">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+</body>
+</html>

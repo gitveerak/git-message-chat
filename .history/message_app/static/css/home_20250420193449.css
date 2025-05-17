@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    height: 99vh;
+    width: 100%;
+    padding:0.5em 2em;
+    background-color: rgb(15, 12, 12);
+}
+.wrap{
+    background-color: silver;
+    border-radius: 2em;
+    height: 98vh;
+    width: 99%;
+}

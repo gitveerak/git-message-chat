@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Improved Animation</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    .wrap {
+      height: 99vh;
+      width: 100vw;
+      background-color: rgb(97, 204, 168);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .wrap_inner {
+      background-color: black;
+      width: 60vw;
+      height: 55vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .img_icon {
+      position: absolute;
+      top: 2em;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 98;
+      transition: opacity 0.3s ease;
+    }
+
+    .img_icon.show {
+      opacity: 1;
+    }
+
+    .icon {
+      width: 1.5em;
+      opacity: 1;
+      z-index: 98;
+      transition: opacity 1s ease, width 1s ease;
+    }
+
+    .icon.fade {
+      width: 1.2em;
+      opacity: 0;
+    }
+
+    .icon_bar {
+      height: 1.5em;
+      border-radius: 5em;
+      background-color: white;
+      margin-top: 1em;
+      width: 0;
+      opacity: 0;
+      transition: width 1s ease, opacity 0.5s ease;
+    }
+
+    .icon_bar.show-bar {
+      width: 30vw;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="wrap_inner">
+      <div class="img_icon" id="imgIcon">
+        <img class="icon" id="iconImg" src="home.png" alt="home_png" />
+        <div class="icon_bar" id="iconBar"></div>
+      </div>
+    </div>
+    <button type="button" onclick="btn()">Button</button>
+  </div>
+
+  <script>
+    const imgIcon = document.getElementById('imgIcon');
+    const iconBar = document.getElementById('iconBar');
+    const iconImg = document.getElementById('iconImg');
+
+    function btn() {
+      // Reset classes
+      iconImg.classList.remove('fade');
+      iconBar.classList.remove('show-bar');
+
+      // Show wrapper
+      imgIcon.classList.add('show');
+
+      // Fade out image after short delay
+      setTimeout(() => {
+        iconImg.classList.add('fade');
+      }, 1000); // wait 1s before fading img
+
+      // Expand bar after delay
+      setTimeout(() => {
+        iconBar.classList.add('show-bar');
+      }, 1200);
+
+      // Hide everything after 5 seconds
+      setTimeout(() => {
+        imgIcon.classList.remove('show');
+        iconImg.classList.remove('fade');
+        iconBar.classList.remove('show-bar');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

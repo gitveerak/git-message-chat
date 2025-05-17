@@ -1,0 +1,9 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    height: 98vh;
+    width: 100%;
+    background-color: rgb(15, 12, 12);
+}

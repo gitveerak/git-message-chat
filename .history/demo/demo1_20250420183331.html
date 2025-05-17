@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Page</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .wrap{
+            height: 99vh;
+            width: 100vw;
+            background-color: rgb(97, 204, 168);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .wrap_inner{
+            background-color: black;
+            width: 60vw;
+            height: 55vh;
+            position: relative;
+        }
+        .img_icon{
+            display: none;
+            vertical-align: bottom;
+        }
+        .icon{
+            position: absolute;
+            top: 2em;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99;
+            animation: img_icon 1s ease forwards;
+        }
+        .icon_bar{
+            display: none;
+            animation: icon_bar 1s ease forwards;
+            position: absolute;
+            top: 2em;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 1.5em;
+            border-radius: 5em;
+            background-color: white;
+        }
+        
+        @keyframes img_icon {
+            0%{
+                width: 1.5em;
+                opacity: 1;
+            }
+            100%{
+                width: 1.2em;
+                opacity: 0;
+            }
+        }
+        @keyframes icon_bar{
+            0%{
+                width: 3vw;
+            }
+            100%{
+                width: 30vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="wrap_inner">
+            <div class="img_icon">
+                <img class="icon" src="home.png" alt="home_png">
+                <div class="icon_bar">
+                </div>
+            </div>
+        </div>
+        <button type="button" onclick="btn()">Button</button>
+    </div>
+    <script>
+        const img_icon = document.querySelector('.img_icon');
+        const icon_bar = document.querySelector('.icon_bar');
+        function btn() {
+            img_icon.style.display='block';
+            setInterval(() => {
+                icon_bar.style.display='block';
+            }, 800);
+            setTimeout(() => { 
+                img_icon.style.display='none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
