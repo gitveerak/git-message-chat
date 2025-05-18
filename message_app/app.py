@@ -174,4 +174,4 @@ def handle_image(data):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Get the port from the environment variable or default to 5000
-    socketio.run(app,host='0.0.0.0', port=port)
+    socketio.run(app,host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)
