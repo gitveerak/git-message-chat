@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session, request, flash, jsonify, send_file, abort
 from flask_socketio import SocketIO,emit,join_room
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pymongo import MongoClient
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from bson import ObjectId
@@ -11,7 +11,7 @@ import uuid
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-load_dotenv()                 # used for local env  use 
+# load_dotenv()                 # used for local env  use 
 app.secret_key = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
@@ -266,4 +266,4 @@ def handle_image_url(data):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Get the port from the environment variable or default to 5000
-    socketio.run(app,host='0.0.0.0', port=port, debug=True) #  allow_unsafe_werkzeug=True
+    socketio.run(app,host='0.0.0.0', port=port, allow_unsafe_werkzeug=True) #   debug=True
