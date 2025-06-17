@@ -1,4 +1,4 @@
-
+// for message Notification for info
 let messageBar = document.querySelector(".message");
 function message(info){
     if (info){
@@ -34,6 +34,7 @@ middleItems.forEach(item => {
         wrap_right.classList.add('show');
         to_user.innerHTML = item.textContent;
 
+        // for retrive the chat_history from db & folder
         fetch(`/chat_history/${selected_user}`)
         .then(response => response.json())
         .then(data => {
@@ -42,12 +43,33 @@ middleItems.forEach(item => {
 
             data.forEach(msg => {
                 const li = document.createElement('li');
-                li.textContent = msg.message;
+                li.id = `msg-${msg._id}`;
 
                 if (msg.sender === current_user) {
                     li.classList.add('current_user');
+                    li.addEventListener('dblclick', () => {
+                        const confirmed = confirm("Do you want to delete this message?");
+                        if (confirmed) {
+                            socket.emit('delete_private_message', { 
+                                msg_id: msg._id,
+                                sender: current_user,
+                                receiver: selected_user 
+                            });
+                        }
+                    });
                 } else {
                     li.classList.add('other_user');
+                }
+                if (msg.message) {                  // Render text message
+                    li.textContent = msg.message;
+    
+                } else if (msg.filename) {              // Render private image
+                    const img = document.createElement('img');
+                    img.src = `/private_image/${msg.filename}`;
+                    img.style.maxWidth = '300px';
+                    img.style.borderRadius = '10px';
+                    li.style.backgroundColor = 'transparent';
+                    li.appendChild(img);
                 }
 
                 chatBox.appendChild(li);
@@ -56,6 +78,8 @@ middleItems.forEach(item => {
 
     });
 });
+
+// for show last entry when left & load or reload function to the entire page
 window.addEventListener('load', () => {
     const savedUser = localStorage.getItem("selected_user");
     if (savedUser) {
@@ -68,12 +92,13 @@ window.addEventListener('load', () => {
     }
 });
 
-
+// for message input box to expand in wrap_right
 messageBox.addEventListener('input', () => {
     messageBox.style.height = 'auto'; // Reset height
     messageBox.style.height = messageBox.scrollHeight + 'px'; // Expand to fit
 });
 
+// for message submition function in wrap_right
 function current_user_sent() {
     const message = messageBox.value.trim();
     if (message && selected_user) {
@@ -89,6 +114,7 @@ function current_user_sent() {
     }
 }
 
+// for logout btn function
 function logout_btn(){
     fetch('/logout', {
         method: 'post',
@@ -113,6 +139,7 @@ chatForm.addEventListener('submit', function(e) {
     current_user_sent();
 });
 
+// works for laptop ( for close wrap_right)
 document.addEventListener('click', function(e) {
     const a =e.target.closest('.user_lists') || e.target.closest('.wrap_right') || e.target.closest('.user_wrap');
     if(a) return
@@ -121,19 +148,70 @@ document.addEventListener('click', function(e) {
     allItems.forEach(i => i.style.color = '');
 });
 
+// wrap_right back btn function
+const x_btn = document.querySelector('.return_btn');
+x_btn.addEventListener('click',()=>{
+    wrap_right.classList.remove('show');
+    allItems.forEach(i => i.style.backgroundColor = '');
+    allItems.forEach(i => i.style.color = '');
+});
+
+// for more_btn to act as toggleBtn 
+const moreBtn = document.querySelector('.more_option');
+const icon = document.querySelector('.more_opt');
+const more_block = document.querySelector('.more_btn');
+let isOpen = false;
+
+document.addEventListener('click', (e) => {
+    if (!moreBtn.contains(e.target) && !more_block.contains(e.target)) {
+        more_block.classList.remove('show');
+        icon.src = moreIcon;
+        icon.classList.remove('close_opt');
+        isOpen = false;
+    }
+});
+moreBtn.addEventListener('click', () => {
+    isOpen = !isOpen;
+    more_block.classList.toggle('show');
+    icon.src = isOpen ? closeIcon : moreIcon;
+    if (isOpen) {
+        icon.classList.add('close_opt');
+    } else {
+        icon.classList.remove('close_opt');
+    }
+});
+
+
+// for image submition to folder & show it in wrap_right
 document.getElementById('imageInput').addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
-    console.log("Image selected:", file.name); // Check if this logs
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const base64Image = e.target.result;
-        socket.emit('send_image', {
-            sender: current_user,
-            receiver: selected_user,
-            image: base64Image
-        });
-    };
-    reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('sender', current_user);   // make sure defined
+    formData.append('receiver', selected_user); // make sure defined
+
+    fetch('/upload_image', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.image_path) {
+            socket.emit('send_image_url', {
+                sender: current_user,
+                receiver: selected_user,
+                image_path: data.image_path  // only the path, not full URL
+            });
+
+            const li = document.createElement('li');
+            const img = document.createElement('img');
+            img.src = `/private_image/${data.filename}`; // Flask route will validate access
+            img.style.maxWidth = '300px';
+            img.style.borderRadius = '10px';
+            li.appendChild(img);
+            chatList.appendChild(li);
+        }
+    });
 });

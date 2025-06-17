@@ -17,6 +17,17 @@
             </div>
         </div>
         <div class="wrap_left">
+            <div class="logo">
+                <img class="logo_img" src="{{ url_for('static', filename='img/logo.gif') }}" alt="logo">
+                <div class="logo_text">Groupy</div>
+                <div class="more_option">
+                    <img class="more_opt" src="{{ url_for('static', filename='img/more.png') }}" alt="more">
+                </div>
+            </div>
+            <ul class="more_btn">
+                <li class="more_logout" onclick="logout_btn()">Logout</li>
+            </ul>
+
             <div class="other_users">
                 <div class="other_users_list">
                         {% if other_user_list %}
@@ -32,6 +43,7 @@
         <div class="wrap_right">
             <div class="chat_box_outer">
                 <div class="to_user"></div>
+                <img class="return_btn" src="{{ url_for('static', filename='img/back.png') }}" alt="back">
                 <div class="chat_box_inner">
                     <ul class="chat_box">
                     </ul>
@@ -61,19 +73,50 @@
                 const li = document.createElement('li');
                 li.className = data.sender === current_user ? "current_user" : "other_user";
                 li.textContent = data.message;
+                li.id = `msg-${data._id}`;
+
+                if (data.sender === current_user) {
+                    li.classList.add('current_user');
+                    li.addEventListener('dblclick', () => {
+                        const confirmed = confirm("Do you want to delete this message?");
+                        if (confirmed) {
+                            socket.emit('delete_private_message', { 
+                                msg_id: data._id,
+                                sender: current_user,
+                                receiver: selected_user 
+                            });
+                        }
+                    });
+                } else {
+                    li.classList.add('other_user');
+                }
+
                 chatList.appendChild(li);
             });
             socket.on('receive_image', (data) => {
                 const img = document.createElement('img');
-                img.src = data.image;
+                const li = document.createElement('li');
+
+                img.src = data.image_url;
+                img.style.maxWidth = '300px';
+                img.style.borderRadius = '8px';
+                li.style.backgroundColor = 'transparent';
                 img.classList.add('chat_image');
 
-                const li = document.createElement('li');
                 li.appendChild(img);
                 li.classList.add(data.sender === current_user ? 'current_user' : 'other_user');
-
                 chatList.appendChild(li);
             });
+
+            socket.on('message_deleted', (data) => {
+                const msgElement = document.getElementById(`msg-${data.msg_id}`);
+                if (msgElement) {
+                    msgElement.remove();
+                }
+            });
+
+            const moreIcon = "{{ url_for('static', filename='img/more.png') }}";
+            const closeIcon = "{{ url_for('static', filename='img/close24.png') }}";
 
     </script>
 </body>
